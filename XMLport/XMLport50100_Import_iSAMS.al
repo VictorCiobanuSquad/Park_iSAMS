@@ -99,42 +99,8 @@ xmlport 50100 xml_iSAMS
                 {
                     MinOccurs = Zero;
                 }
-                trigger OnAfterGetRecord()
-                var
-                    myInt: Integer;
-                begin
-                    Message('2');
-                end;
-
-                trigger OnAfterInitRecord()
-                var
-                    myInt: Integer;
-                begin
-                    Message('3');
-                end;
-
-                trigger OnAfterInsertRecord()
-                var
-                    myInt: Integer;
-                begin
-
-                    Message('4');
-                end;
-
-                trigger OnAfterModifyRecord()
-                var
-                    myInt: Integer;
-                begin
-                    Message('5');
-                end;
-
                 trigger OnBeforeInsertRecord()
-                var
-                    myInt: Integer;
                 begin
-
-
-
                     IF iSAMS."Student Firstname" = '' THEN
                         currXMLport.SKIP;
 
@@ -250,13 +216,6 @@ xmlport 50100 xml_iSAMS
                         END;
                     END;
                 end;
-
-                trigger OnBeforeModifyRecord()
-                var
-                    myInt: Integer;
-                begin
-                    Message('7');
-                end;
             }
 
         }
@@ -287,6 +246,27 @@ xmlport 50100 xml_iSAMS
     begin
         riSAMS.RESET;
         riSAMS.DELETEALL;
+    end;
+
+    trigger OnPostXmlPort()
+    begin
+
+        riSAMS.RESET;
+        riSAMS.SETRANGE(riSAMS.Duplicado, TRUE);
+        riSAMS.SETFILTER(riSAMS.Relationtype, '<>%1', 'Parents');
+        IF riSAMS.FINDSET THEN BEGIN
+            REPEAT
+                riSAMS2.RESET;
+                riSAMS2.SETRANGE(riSAMS2."Nº Processo", riSAMS."Nº Processo");
+                riSAMS2.SETRANGE(riSAMS2.Relationtype, 'Parents');
+                riSAMS2.SETFILTER(riSAMS2.NMov, '<>%1', riSAMS.NMov);
+
+                IF NOT riSAMS2.FINDFIRST THEN BEGIN
+                    riSAMS.Duplicado := FALSE;
+                    riSAMS.MODIFY;
+                END;
+            UNTIL riSAMS.NEXT = 0;
+        END;
     end;
 
     var

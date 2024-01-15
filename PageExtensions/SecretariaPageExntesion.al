@@ -15,6 +15,15 @@ pageextension 50100 "Secreatria Role Center Ext" extends "Secretaria Role Center
                     caption = 'Import iSAMS';
                     RunObject = xmlport "xml_iSAMS";
                 }
+
+
+
+                action("iSams List")
+                {
+                    ApplicationArea = All;
+                    caption = 'iSams List';
+                    RunObject = Page "iSams List";
+                }
             }
 
         }
