@@ -1,0 +1,41 @@
+{
+  "id": "d6e03c4f-1c80-40fa-afda-1cfcbc602516",
+  "name": "Park-iSAMS",
+  "publisher": "Default Publisher",
+  "version": "1.0.0.1",
+  "brief": "",
+  "description": "",
+  "privacyStatement": "",
+  "EULA": "",
+  "help": "",
+  "url": "",
+  "logo": "",
+  "dependencies": [
+    {
+      "id": "0b0a0933-50d9-4352-8803-7bf91e6c5491",
+      "version": "21.4.1905.1",
+      "publisher": "Softstore SA",
+      "name": "SOFTSTORE Localization Pack for Portugal"
+    },
+    {
+      "id": "d6e03c4f-1c80-40fa-afda-1cfcbc602513",
+      "version": "1.0.0.1",
+      "publisher": "Default publisher",
+      "name": "Park-IS"
+    }
+  ],
+  "screenshots": [],
+  "platform": "1.0.0.0",
+  "application": "17.0.0.0",
+  "idRanges": [
+    {
+      "from": 50100,
+      "to": 50149
+    }
+  ],
+  "showMyCode": true,
+  "runtime": "6.0",
+  "features": [
+    "NoImplicitWith"
+  ]
+}
