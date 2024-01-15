@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 xliff-core-1.2-transitional.xsd">
+  <file datatype="xml" source-language="en-US" target-language="en-US" original="Park-iSAMS">
+    <body>
+      <group id="body">
+        <trans-unit id="Page 2228842009 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>iSams List</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page iSams List - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Report 4085643178 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>import isams to database</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report import isams to database - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Report 4085643178 - NamedType 2344539320" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Student %1 does not have a NIB and cannot be imported.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report import isams to database - NamedType Text0001</note>
+        </trans-unit>
+        <trans-unit id="Report 4085643178 - NamedType 2982235937" size-unit="char" translate="yes" xml:space="preserve">
+          <source>You cannot import while there are duplicates.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Report import isams to database - NamedType Text0002</note>
+        </trans-unit>
+        <trans-unit id="XmlPort 3131663189 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Import iSAMS</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">XmlPort xml_iSAMS - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 2529349349 - Action 3449929958 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 1444743758">
+          <source>Actividades Periódicas</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Secreatria Role Center Ext - Action Actividades Periodicas - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 2529349349 - Action 3933924004 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 1444743758">
+          <source>1st Step - Import iSams from txt</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Secreatria Role Center Ext - Action Import iSAMS - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 2529349349 - Action 4085643178 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 1444743758">
+          <source>3rd Step - Import</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Secreatria Role Center Ext - Action import isams to database - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 2529349349 - Action 2228842009 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 1444743758">
+          <source>2nd Step - Verify the data</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Secreatria Role Center Ext - Action iSams List - Property Caption</note>
+        </trans-unit>
+      </group>
+    </body>
+  </file>
+</xliff>

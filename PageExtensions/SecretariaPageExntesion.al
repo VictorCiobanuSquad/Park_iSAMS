@@ -12,7 +12,7 @@ pageextension 50100 "Secreatria Role Center Ext" extends "Secretaria Role Center
                 action("Import iSAMS")
                 {
                     ApplicationArea = All;
-                    caption = 'Import iSAMS';
+                    caption = '1st Step - Import iSams from txt';
                     RunObject = xmlport "xml_iSAMS";
                 }
 
@@ -21,8 +21,16 @@ pageextension 50100 "Secreatria Role Center Ext" extends "Secretaria Role Center
                 action("iSams List")
                 {
                     ApplicationArea = All;
-                    caption = 'iSams List';
+                    caption = '2nd Step - Verify the data';
                     RunObject = Page "iSams List";
+                }
+
+
+                action("import isams to database")
+                {
+                    ApplicationArea = All;
+                    caption = '3rd Step - Import';
+                    RunObject = report "import isams to database";
                 }
             }
 
