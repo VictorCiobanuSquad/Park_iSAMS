@@ -3,6 +3,7 @@ report 50100 "import isams to database"
     ApplicationArea = All;
     Caption = 'import isams to database';
     UsageCategory = Tasks;
+    ProcessingOnly = true;
     dataset
     {
         dataitem(iSAMS; iSAMS)
@@ -30,7 +31,12 @@ report 50100 "import isams to database"
                     rStudents.INIT;
                     rStudents."No." := iSAMS."Nº Processo";
                     rStudents."SchoolID iSAMS" := iSAMS."School ID";
-                    IF iSAMS.Name <> '' THEN rStudents.VALIDATE(rStudents.Name, iSAMS.Name);
+                    IF iSAMS.Name <> '' THEN BEGIN
+                        rStudents.Name := iSAMS.Name;
+                        rStudents.UpdateFullName;
+                        rStudents.UpdateProfile;
+                    END;
+
                     IF iSAMS."VAT Registration No." <> '' THEN
                         rStudents.VALIDATE(rStudents."VAT Registration No.", iSAMS."VAT Registration No.");
                     IF iSAMS."Birth Date" <> 0D THEN rStudents.VALIDATE(rStudents."Birth Date", iSAMS."Birth Date");
@@ -98,9 +104,30 @@ report 50100 "import isams to database"
                     rStudents."User Id" := USERID;
                     rStudents.Date := WORKDATE;
                     //rStudents.InsertUsersStudent;
-                    rStudents.INSERT;
-                    rStudents.InsertUsersStudent;
 
+                    //CHECK IF INSERT
+                    if rStudents.Name <> '' then
+                        rStudents_Aux.Reset;
+                    if rStudents.Name <> '' then
+                        rStudents_Aux.SetRange(Name, Name)
+                    else
+                        rStudents_Aux.SetRange(Name, '');
+                    if rStudents."Last Name" <> '' then
+                        rStudents_Aux.SetFilter("Last Name", rStudents."Last Name")
+                    else
+                        rStudents_Aux.SetRange("Last Name", '');
+
+                    if rStudents."Last Name 2" <> '' then
+                        rStudents_Aux.SetRange("Last Name 2", rStudents."Last Name 2")
+                    else
+                        rStudents_Aux.SetRange("Last Name 2", '');
+
+                    rStudents_Aux.SetFilter("No.", '<>%1', rStudents."No.");
+                    rStudents_Aux.SetRange("Responsibility Center", rStudents."Responsibility Center");
+                    if not rStudents_Aux.FindFirst then begin
+                        rStudents.INSERT;
+                        rStudents.InsertUsersStudent;
+                    end;
                 END ELSE BEGIN
 
                     IF iSAMS.Address <> '' THEN BEGIN
@@ -237,7 +264,8 @@ report 50100 "import isams to database"
                     rUsersFamilyStudents.VALIDATE(rUsersFamilyStudents."No.", rUsersFamily."No.");
                     IF ParentescoEncEdu = 2 THEN
                         rUsersFamilyStudents."Education Head" := TRUE;
-                    rUsersFamilyStudents.INSERT(TRUE);
+                    if not rUsersFamilyStudents.INSERT(TRUE) then
+                        rUsersFamilyStudents.Modify();
                 END;
 
                 //////////////PAI///////////////////
@@ -327,7 +355,8 @@ report 50100 "import isams to database"
                     rUsersFamilyStudents.VALIDATE(rUsersFamilyStudents."No.", rUsersFamily."No.");
                     IF ParentescoEncEdu = 1 THEN
                         rUsersFamilyStudents."Education Head" := TRUE;
-                    rUsersFamilyStudents.INSERT(TRUE);
+                    if not rUsersFamilyStudents.INSERT(TRUE) then
+                        rUsersFamilyStudents.Modify();
                 END;
 
 
@@ -359,10 +388,12 @@ report 50100 "import isams to database"
 
     var
         rStudents: Record Students;
+        rStudents_Aux: Record Students;
         NumAluno: Code[10];
         encontrou: Boolean;
         rUsersFamily: Record "Users Family";
         rUsersFamilyStudents: Record "Users Family / Students";
+        rUsersFamilyStudents2: Record "Users Family / Students";
         cStudentsRegistration: Codeunit "Students Registration";
         rEduConf: Record "Edu. Configuration";
         cNoSeriesMgt: Codeunit NoSeriesManagement;
