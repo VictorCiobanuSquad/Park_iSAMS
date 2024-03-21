@@ -5,7 +5,6 @@ page 50100 "iSams List"
     PageType = List;
     SourceTable = iSAMS;
     UsageCategory = Lists;
-
     layout
     {
         area(content)

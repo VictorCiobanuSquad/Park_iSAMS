@@ -2,6 +2,7 @@ xmlport 50100 xml_iSAMS
 {
     Caption = 'Import iSAMS';
     Format = VariableText;
+    TextEncoding = WINDOWS;
     FieldSeparator = '<TAB>';
     schema
     {
@@ -267,6 +268,7 @@ xmlport 50100 xml_iSAMS
                 END;
             UNTIL riSAMS.NEXT = 0;
         END;
+        Message(FinishedMessage);
     end;
 
     var
@@ -277,4 +279,5 @@ xmlport 50100 xml_iSAMS
         NoSeriesMgt: Codeunit NoSeriesManagement;
         rEduConfiguration: Record "Edu. Configuration";
         NoSerie: Code[20];
+        FinishedMessage: Label 'The File was imported successfully.';
 }

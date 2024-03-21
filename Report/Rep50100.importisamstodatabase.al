@@ -1,3 +1,4 @@
+//squad Victor Ciobanu 03122024, alterado a forma que vai verificar se o associado existe. de nome para NIF e EMAIL
 report 50100 "import isams to database"
 {
     ApplicationArea = All;
@@ -19,12 +20,25 @@ report 50100 "import isams to database"
                 IF riSAMS.FINDFIRST THEN
                     ERROR(Text0002);
 
+                riSAMS.RESET;
+                riSAMS.SetRange(HasError, false);
                 rEduConf.GET;     //#001 SQD RTV 20210622
             end;
 
             trigger OnAfterGetRecord()
             begin
 
+                //CLEAR(NumAluno);
+                //NumAluno :=  PADSTR(NumAluno,5-STRLEN(iSAMS."No."),'0') + iSAMS."No.";
+                //MESSAGE('%1', NumAluno);
+
+                //rStudents.RESET;
+                //IF rStudents.GET(NumAluno) THEN BEGIN
+                //IT 2016.12.22 - A pedido do Parque não é para atualizar alunos que já existem, só criar novos ( o codigo foi comentado)
+
+                //END ELSE BEGIN
+                //Insere
+                //----------------
                 IF NOT rStudents.GET(iSAMS."Nº Processo") THEN BEGIN
 
 
@@ -33,9 +47,10 @@ report 50100 "import isams to database"
                     rStudents."SchoolID iSAMS" := iSAMS."School ID";
                     IF iSAMS.Name <> '' THEN BEGIN
                         rStudents.Name := iSAMS.Name;
-                        rStudents.UpdateFullName;
-                        rStudents.UpdateProfile;
                     END;
+                    rStudents.UpdateFullName;
+                    rStudents.UpdateProfile;
+
 
                     IF iSAMS."VAT Registration No." <> '' THEN
                         rStudents.VALIDATE(rStudents."VAT Registration No.", iSAMS."VAT Registration No.");
@@ -104,30 +119,9 @@ report 50100 "import isams to database"
                     rStudents."User Id" := USERID;
                     rStudents.Date := WORKDATE;
                     //rStudents.InsertUsersStudent;
+                    rStudents.INSERT;
+                    rStudents.InsertUsersStudent;
 
-                    //CHECK IF INSERT
-                    if rStudents.Name <> '' then
-                        rStudents_Aux.Reset;
-                    if rStudents.Name <> '' then
-                        rStudents_Aux.SetRange(Name, Name)
-                    else
-                        rStudents_Aux.SetRange(Name, '');
-                    if rStudents."Last Name" <> '' then
-                        rStudents_Aux.SetFilter("Last Name", rStudents."Last Name")
-                    else
-                        rStudents_Aux.SetRange("Last Name", '');
-
-                    if rStudents."Last Name 2" <> '' then
-                        rStudents_Aux.SetRange("Last Name 2", rStudents."Last Name 2")
-                    else
-                        rStudents_Aux.SetRange("Last Name 2", '');
-
-                    rStudents_Aux.SetFilter("No.", '<>%1', rStudents."No.");
-                    rStudents_Aux.SetRange("Responsibility Center", rStudents."Responsibility Center");
-                    if not rStudents_Aux.FindFirst then begin
-                        rStudents.INSERT;
-                        rStudents.InsertUsersStudent;
-                    end;
                 END ELSE BEGIN
 
                     IF iSAMS.Address <> '' THEN BEGIN
@@ -181,19 +175,33 @@ report 50100 "import isams to database"
                 //////////////MAE///////////////////
                 encontrou := FALSE;
                 IF NomeMae <> '' THEN BEGIN
-                    IF NIFMae <> '' THEN BEGIN
-                        rUsersFamily.RESET;
-                        rUsersFamily.SETRANGE(rUsersFamily."VAT Registration No.", NIFMae);
-                        IF rUsersFamily.FINDFIRST THEN
-                            encontrou := TRUE;
-                    END;
+
+                    //Testar se o associado já existe pelo nº contribuinte
+                    //IF (ParentescoEncEdu = 2) AND (NContribuinteEncEdu<>'') THEN BEGIN
+                    //  rUsersFamily.RESET;
+                    //  rUsersFamily.SETRANGE(rUsersFamily."VAT Registration No.",NContribuinteEncEdu);
+                    //  IF rUsersFamily.FINDFIRST THEN
+                    //    encontrou := TRUE;
+                    //END;
+
+                    //IT001 - Parque - 2018.02.22,en
+                    //Testar se o associado já existe pelo nº contribuinte
+                    /*   IF NIFMae <> '' THEN BEGIN
+                           rUsersFamily.RESET;
+                           rUsersFamily.SETRANGE(rUsersFamily."VAT Registration No.", NIFMae);
+                           IF rUsersFamily.FINDFIRST THEN
+                               encontrou := TRUE;
+                       END;
+                   */
                     //IT001 - Parque - 2018.02.22,sn
 
 
-                    //Testar se o associado já existe pelo nome
+                    //Testar se o associado já existe pelo E-Mail
                     IF encontrou = FALSE THEN BEGIN
                         rUsersFamily.RESET;
-                        rUsersFamily.SETRANGE(rUsersFamily.Name, NomeMae);
+                        rUsersFamily.SetRange("E-mail", "E-mailMae");
+                        rUsersFamily.SetRange("VAT Registration No.", NIFMae);
+                        //rUsersFamily.SETRANGE(rUsersFamily.Name, NomeMae);
                         IF rUsersFamily.FINDFIRST THEN
                             encontrou := TRUE;
                     END;
@@ -257,33 +265,53 @@ report 50100 "import isams to database"
 
 
                     //Associar a mae ao aluno
-                    rUsersFamilyStudents.INIT;
-                    rUsersFamilyStudents."School Year" := cStudentsRegistration.GetShoolYearActive;
-                    rUsersFamilyStudents."Student Code No." := rStudents."No.";
-                    rUsersFamilyStudents.Kinship := rUsersFamilyStudents.Kinship::Mother;
-                    rUsersFamilyStudents.VALIDATE(rUsersFamilyStudents."No.", rUsersFamily."No.");
-                    IF ParentescoEncEdu = 2 THEN
-                        rUsersFamilyStudents."Education Head" := TRUE;
-                    if not rUsersFamilyStudents.INSERT(TRUE) then
-                        rUsersFamilyStudents.Modify();
+                    rUsersFamilyStudents.RESEt;
+                    rUsersFamilyStudents.SetRange("School Year", cStudentsRegistration.GetShoolYearActive);
+                    rUsersFamilyStudents.SetRange("Student Code No.", rStudents."No.");
+                    rUsersFamilyStudents.SetRange(Kinship, rUsersFamilyStudents.Kinship::Father);
+                    rUsersFamilyStudents.SetRange("No.", rUsersFamily."No.");
+                    if not rUsersFamilyStudents.FindFirst() then begin
+                        rUsersFamilyStudents.INIT;
+                        rUsersFamilyStudents."School Year" := cStudentsRegistration.GetShoolYearActive;
+                        rUsersFamilyStudents."Student Code No." := rStudents."No.";
+                        rUsersFamilyStudents.Kinship := rUsersFamilyStudents.Kinship::Mother;
+                        rUsersFamilyStudents.VALIDATE(rUsersFamilyStudents."No.", rUsersFamily."No.");
+                        IF ParentescoEncEdu = 2 THEN
+                            rUsersFamilyStudents."Education Head" := TRUE;
+                        rUsersFamilyStudents.insert(TRUE);
+                    end;
                 END;
 
                 //////////////PAI///////////////////
                 encontrou := FALSE;
                 IF NomePai <> '' THEN BEGIN
-                    IF NIFPai <> '' THEN BEGIN
-                        rUsersFamily.RESET;
-                        rUsersFamily.SETRANGE(rUsersFamily."VAT Registration No.", NIFPai);
-                        IF rUsersFamily.FINDFIRST THEN
-                            encontrou := TRUE;
-                    END;
+
+                    //Testar se o associado já existe pelo nº contribuinte
+                    //IF (ParentescoEncEdu = 1) AND (NContribuinteEncEdu<>'') THEN BEGIN
+                    //  rUsersFamily.RESET;
+                    //  rUsersFamily.SETRANGE(rUsersFamily."VAT Registration No.",NContribuinteEncEdu);
+                    //  IF rUsersFamily.FINDFIRST THEN
+                    //    encontrou := TRUE;
+                    //END;
+
+                    //IT001 - Parque - 2018.02.22,en
+                    //Testar se o associado já existe pelo nº contribuinte
+                    /*    IF NIFPai <> '' THEN BEGIN
+                            rUsersFamily.RESET;
+                            rUsersFamily.SETRANGE(rUsersFamily."VAT Registration No.", NIFPai);
+                            IF rUsersFamily.FINDFIRST THEN
+                                encontrou := TRUE;
+                        END;
+                    */
                     //IT001 - Parque - 2018.02.22,sn
 
 
                     //Testar se o associado já existe pelo nome
                     IF encontrou = FALSE THEN BEGIN
                         rUsersFamily.RESET;
-                        rUsersFamily.SETRANGE(rUsersFamily.Name, NomePai);
+                        rUsersFamily.SetRange("VAT Registration No.", NIFPai);
+                        rUsersFamily.SetRange("E-mail", "E-mailPai");
+                        //rUsersFamily.SETRANGE(rUsersFamily.Name, NomePai);
                         IF rUsersFamily.FINDFIRST THEN
                             encontrou := TRUE;
                     END;
@@ -348,18 +376,24 @@ report 50100 "import isams to database"
 
 
                     //Associar o Pai ao aluno
-                    rUsersFamilyStudents.INIT;
-                    rUsersFamilyStudents."School Year" := cStudentsRegistration.GetShoolYearActive;
-                    rUsersFamilyStudents."Student Code No." := rStudents."No.";
-                    rUsersFamilyStudents.Kinship := rUsersFamilyStudents.Kinship::Father;
-                    rUsersFamilyStudents.VALIDATE(rUsersFamilyStudents."No.", rUsersFamily."No.");
-                    IF ParentescoEncEdu = 1 THEN
-                        rUsersFamilyStudents."Education Head" := TRUE;
-                    if not rUsersFamilyStudents.INSERT(TRUE) then
-                        rUsersFamilyStudents.Modify();
+                    rUsersFamilyStudents.RESEt;
+                    rUsersFamilyStudents.SetRange("School Year", cStudentsRegistration.GetShoolYearActive);
+                    rUsersFamilyStudents.SetRange("Student Code No.", rStudents."No.");
+                    rUsersFamilyStudents.SetRange(Kinship, rUsersFamilyStudents.Kinship::Father);
+                    rUsersFamilyStudents.SetRange("No.", rUsersFamily."No.");
+                    if not rUsersFamilyStudents.FindFirst() then begin
+                        rUsersFamilyStudents.INIT;
+                        rUsersFamilyStudents."School Year" := cStudentsRegistration.GetShoolYearActive;
+                        rUsersFamilyStudents."Student Code No." := rStudents."No.";
+                        rUsersFamilyStudents.Kinship := rUsersFamilyStudents.Kinship::Father;
+                        rUsersFamilyStudents.VALIDATE(rUsersFamilyStudents."No.", rUsersFamily."No.");
+                        IF ParentescoEncEdu = 1 THEN
+                            rUsersFamilyStudents."Education Head" := TRUE;
+                        rUsersFamilyStudents.Insert(TRUE);
+                    end;
                 END;
 
-
+                Delete;
                 //END;
             end;
         }

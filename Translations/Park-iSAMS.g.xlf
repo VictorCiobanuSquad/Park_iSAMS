@@ -28,10 +28,20 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">XmlPort xml_iSAMS - Property Caption</note>
         </trans-unit>
+        <trans-unit id="XmlPort 3131663189 - NamedType 4063739683" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The File was imported successfully.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">XmlPort xml_iSAMS - NamedType FinishedMessage</note>
+        </trans-unit>
         <trans-unit id="PageExtension 2529349349 - Action 3449929958 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 1444743758">
           <source>Actividades Periódicas</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension Secreatria Role Center Ext - Action Actividades Periodicas - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 2529349349 - Action 2627170667 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 1444743758">
+          <source>Importar Alunos iSAMS</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Secreatria Role Center Ext - Action Importar Alunos iSAMS - Property Caption</note>
         </trans-unit>
         <trans-unit id="PageExtension 2529349349 - Action 3933924004 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 1444743758">
           <source>1st Step - Import iSams from txt</source>
